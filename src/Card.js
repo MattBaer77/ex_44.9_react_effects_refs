@@ -6,9 +6,14 @@ Individual Card
 
 */
 
-function Card() {
+function Card({image}) {
+
     return(
-        <div>I am a card</div>
+
+        <>
+            <img src={image} ></img>
+        </>
+        
     )
 }
 
