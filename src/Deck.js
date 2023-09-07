@@ -32,7 +32,7 @@ function Deck() {
 
         if (!res.data.success) {
 
-            setEmpty(!empty)
+            setEmpty(empty => !empty)
 
         } else {
 
