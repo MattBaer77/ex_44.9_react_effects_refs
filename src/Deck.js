@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import Card from "./Card"
 import axios from "axios";
@@ -14,6 +14,8 @@ function Deck() {
     const [deckId, setDeckId] = useState(null);
     const [deck, addToDeck] = useState([]);
     const [empty, setEmpty] = useState(false)
+    const [drawing, setDrawing] = useState(false)
+    const timerId = useRef()
 
     useEffect(() => {
         async function loadNewShuffledDeck() {
@@ -41,14 +43,52 @@ function Deck() {
 
     }
 
+    useEffect(() => {
+
+        if (!drawing) {
+
+            return
+
+        }
+
+        timerId.current = setInterval(() => {
+            draw()
+        }, 1000)
+
+        return () => clearInterval(timerId.current)
+
+    }, [drawing])
+
+    const stopDraw = () => {
+
+        setDrawing(false)
+        clearInterval(timerId.current)
+
+    }
+
+    const startDraw = () => {
+        setDrawing(true)
+    }
+
     if (!deckId) {
         return <h3>Loading...</h3>
+    }
+
+    if (empty) {
+        clearInterval(timerId.current)
     }
 
     return(
         <>
 
-            {empty ? <div><h1> Out of Cards</h1></div> : <div><h1>Draw A Card!</h1><button onClick={draw}>Draw</button></div>}
+            <div>
+
+            {empty ? <h1>Out of Cards</h1>  : <h1>Let's Play</h1>}
+
+            {!empty && !drawing && <button onClick={startDraw}>Start Drawing</button>}
+            {!empty && drawing && <button onClick={stopDraw}>Stop Drawing</button>}
+
+            </div>
 
             <div className="card-area">
 
